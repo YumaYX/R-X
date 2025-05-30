@@ -1,10 +1,14 @@
-
+ZOLA_IMAGE=ghcr.io/getzola/zola:v0.20.0
+VOLUME=-v $$PWD:/app:z
+WORKDIR=--workdir /app
+RUN=podman run $(VOLUME) $(WORKDIR)
 
 serve:
-	podman run -v $$PWD:/app --workdir /app -p 8080:8080 ghcr.io/getzola/zola:v0.20.0 serve --interface 0.0.0.0 --port 8080 --base-url localhost
+	$(RUN) -p 8080:8080 $(ZOLA_IMAGE) serve --interface 0.0.0.0 --port 8080 --base-url localhost/R-X/
 
 build:
-	podman run -it -v $$PWD:/app:z --workdir /app ghcr.io/getzola/zola:v0.20.0 build
+	$(RUN) $(ZOLA_IMAGE) build
 
 init:
-	podman run -it -v $$PWD:/app:z --workdir /app ghcr.io/getzola/zola:v0.20.0 init .
+	podman run -it $(VOLUME) $(WORKDIR) $(ZOLA_IMAGE) init .
+
