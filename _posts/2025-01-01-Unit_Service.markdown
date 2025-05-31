@@ -16,6 +16,7 @@ EOFSH
 
 chmod 744 /opt/hello.sh
 
+
 cat <<'EOFSERVICE' > /etc/systemd/system/hello.service
 [Unit]
 Description = hello daemon
@@ -28,9 +29,11 @@ Restart = always
 WantedBy = multi-user.target
 EOFSERVICE
 
+# setting
 systemctl enable hello --now
 systemctl start hello
 
+# check
 sleep 3 ; tail -F /tmp/hello.log
 ```
 
