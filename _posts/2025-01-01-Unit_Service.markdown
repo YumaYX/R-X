@@ -39,7 +39,7 @@ sleep 3 ; tail -F /tmp/hello.log
 
 # Note on SELinux Contexts
 
-When created under /tmp, the shell does not execute due to different SELinux labels. It worked when created under /opt (usr_t).
+When created under /tmp, the shell does not execute due to different SELinux labels. It worked when created under /opt (`usr_t`).
 
 ```
 [root@localhost ~]# ls -Z /opt/hello.sh
