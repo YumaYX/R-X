@@ -1,14 +1,24 @@
-ZOLA_IMAGE=ghcr.io/getzola/zola:v0.20.0
-VOLUME=-v $$PWD:/app:z
-WORKDIR=--workdir /app
-RUN=podman run $(VOLUME) $(WORKDIR)
+s:	install
+	bundle exec jekyll server --host=0.0.0.0 --port 4005
 
-serve:
-	$(RUN) -p 8080:8080 $(ZOLA_IMAGE) serve --interface 0.0.0.0 --port 8080 --base-url localhost/R-X/
+install:
+	bundle install
 
-build:
-	$(RUN) $(ZOLA_IMAGE) build
+pub:
+	git status
+	sleep 5
+	git add .
+	git commit -am 'update'
+	git push
 
-init:
-	podman run -it $(VOLUME) $(WORKDIR) $(ZOLA_IMAGE) init .
+com:
+	git status
+	sleep 5
+	git commit -am 'update'
+
+port:
+	sudo dnf -y install firewalld
+	sudo systemctl restart firewalld
+	sudo firewall-cmd --permanent --zone=public --add-port=4002/tcp
+	sudo firewall-cmd --reload
 
