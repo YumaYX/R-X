@@ -1,0 +1,29 @@
+---
+layout: post
+title: Web Server
+category: "Service"
+---
+
+```sh
+dnf -y install nginx
+systemctl enable --now nginx
+
+dnf -y install firewalld
+systemctl enable --now firewalld
+firewall-cmd --permanent --add-service=http
+firewall-cmd --reload
+
+cp -pv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
+```
+
+# DocumentRoot
+
+`/usr/share/nginx/html`
+
+# Environment
+
+```
+[root@localhost ~]# cat /etc/redhat-release
+AlmaLinux release 10.0 (Purple Lion)
+[root@localhost ~]#
+```

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>
+  {% if page.title %}
+    {{ page.title }} | {{ site.title }}
+  {% else %}
+    {{ site.title }}
+  {% endif %}
+</title>
+    <link rel="stylesheet" href="https://yumayx.github.io/works/assets/css/normalize.css">
+    <link rel="stylesheet" href="https://yumayx.github.io/works/assets/css/skeleton.css">
+    <link rel="stylesheet" href="https://yumayx.github.io/works/assets/css/extends.css">
+  </head>
+  <body>
+
+    <nav class="navbar">
+      <div class="container">
+        <h2 class="stitle"><a href="{{ site.baseurl }}/">{{ site.title }}</a></h2>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="main">
+      {{ content }}
+      </div>
+    </div>
+
+    <hr />
+    <footer>
+      <div class="container">
+        <h1><strong>Yuma</strong></h1>
+        <div class="credit">
+          <p><strong>✎{{ site.title }} | Built with GitHub Pages + Jekyll + Skelton CSS | Created and maintained by <a href="/works/"><span class="marker">Yuma</span></a></strong></p>
+        </div>
+      </div>
+    </footer>
+
+  </body>
+</html>
