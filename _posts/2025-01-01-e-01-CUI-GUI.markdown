@@ -1,0 +1,41 @@
+---
+layout: post
+title: CUI-GUI
+category: "Interface"
+---
+
+AlmaLinux 10 で実際に動作を確認した結果に基づいてまとめた、CUI と GUI の起動モード切り替え手順です。GUI の導入方法や一時的・恒久的なモード変更の方法も含まれています。
+
+# Status
+
+```sh
+systemctl get-default
+```
+
+このコマンドは、現在のシステム起動時に使用されるデフォルトターゲット（起動モード）を確認します。たとえば、multi-user.target であればCUI（テキストベース）のログインモード、graphical.target であればGUI（グラフィカルユーザーインターフェース）モードで起動することを意味します。
+
+# CUI
+
+```sh
+systemctl set-default multi-user.target
+```
+
+このコマンドを実行すると、システムは次回以降の起動時にCUI（コマンドライン）モードで起動するようになります。GUIを使わないサーバー環境などで一般的に使用されます。
+
+# GUI
+
+まず dnf -y update でシステムのパッケージをすべて最新の状態に更新します。続いて dnf -y group install "Server with GUI" によって、GNOMEを含むデスクトップ環境がインストールされます。最後に systemctl set-default graphical.target を実行することで、システムは次回起動時からGUIモードで起動するようになります。
+
+```sh
+dnf -y update
+dnf -y group install "Server with GUI"
+systemctl set-default graphical.target
+```
+
+# Start GUI now
+
+GUIがすでにインストールされている場合、このコマンドを実行することで、システムを再起動せずに即座にGUIモードに切り替えることができます。
+
+```sh
+systemctl isolate graphical.target
+```
