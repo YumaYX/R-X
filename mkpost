@@ -5,7 +5,7 @@ if [ "$#" -ne 1 ] ; then
   exit 1
 fi
 
-filename="_posts/`date +%Y-01-01-"${1}".markdown`"
+filename="_posts/`date +%Y-01-01-z-01-"${1}".markdown`"
 filename=${filename//" "/"_"}
 
 cat > $filename <<PTEMPLATE
