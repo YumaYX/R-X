@@ -19,7 +19,6 @@ systemctl enable --now libvirtd
 virsh shutdown guest1-rhx       # ゲストの正常シャットダウン
 virsh destroy guest1-rhx        # 強制停止
 virsh undefine guest1-rhx --remove-all-storage  # 設定とディスクを完全削除
-
 ```
 
 # kickstart
