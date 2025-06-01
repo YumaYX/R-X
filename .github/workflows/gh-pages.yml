@@ -36,7 +36,6 @@ jobs:
       - name: Build with jekyll
         # Outputs to the './_site' directory by default
         run: |
-          ruby app.rb
           bundle exec jekyll build
           sh mod.sh
       - name: Upload artifact
