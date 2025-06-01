@@ -19,7 +19,7 @@ The purpose of this document is to offer a comprehensive reference for commonly 
 The entire website can be downloaded for offline access using the above wget command. This allows users to browse the content without requiring an internet connection.
 
 ```sh
-wget -pkr -l1 -w3 --random-wait https://yumayx.github.io/R-H/
+wget -pkr -l1 -w3 --random-wait https://yumayx.github.io/R-X/
 ```
 
 ## Testing Report of AlmaLinux 9
