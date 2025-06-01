@@ -19,6 +19,6 @@ com:
 port:
 	sudo dnf -y install firewalld
 	sudo systemctl restart firewalld
-	sudo firewall-cmd --permanent --zone=public --add-port=4002/tcp
+	sudo firewall-cmd --permanent --zone=public --add-port=4005/tcp
 	sudo firewall-cmd --reload
 

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Disk Addition and Initialization"
-category: "disk"
+category: "Disk"
 ---
 
 ```sh

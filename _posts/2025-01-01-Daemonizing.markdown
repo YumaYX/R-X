@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Daemonizing
-category: "Unit Service"
+category: "Service"
 ---
 
 ```sh
