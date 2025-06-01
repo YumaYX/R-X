@@ -30,8 +30,8 @@ LOGFILE="$LOG_DIR/rear-$HOSTNAME.log"
 GRUB_RESCUE=1
 EOF
 
-mkdir -p /backup && umount /backup
-mount -t nfs 192.168.122.249:/nfs /backup
+#mkdir -p /backup && umount /backup
+#mount -t nfs 192.168.122.249:/nfs /backup
 ```
 
 ## on Local
@@ -132,8 +132,8 @@ firewall-cmd --reload
 ```
 
 ```sh
-cp -pv /nfs/xxxx.iso /tmp/rear.iso
-umount /backup
+cp -pv /nfs/localhost/rear-localhost.iso /tmp/rear.iso
+umount /nfs
 isofile='/tmp/rear.iso'
 
 virt-install \
