@@ -6,6 +6,10 @@ category: "Backup/Restore"
 
 **<u>注意：未検証</u>**
 
+下のNFSサーバーをlibvirtで構築し、バックアップをすると、NFSサーバーがハングする(2025/06/03時点)。原因未調査のため、未検証。
+
+---
+
 # Install Packages
 
 ```sh
