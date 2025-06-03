@@ -45,6 +45,8 @@ sleep 3 ; tail -F /tmp/hello.log
 
 スクリプトが /tmp にあると SELinux によって実行が拒否されることがあります。以下のように /opt に配置した場合は、usr_t のラベルが付き、正常に systemd サービスから呼び出すことができます。
 
+`ExecStart=/usr/bin/sh-c <Shell>`の形で記述すれば、SELinuxコンテキストの考慮は不要となる。
+
 ```
 [root@localhost ~]# ls -Z /opt/hello.sh
 unconfined_u:object_r:usr_t:s0 /opt/hello.sh
@@ -53,5 +55,5 @@ unconfined_u:object_r:usr_t:s0 /opt/hello.sh
 
 ##### Reference
 
-<https://qiita.com/DQNEO/items/0b5d0bc5d3cf407cb7ff>
-
+- <https://qiita.com/DQNEO/items/0b5d0bc5d3cf407cb7ff>
+- <https://www.yo7612.com/archives/148>
