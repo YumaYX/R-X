@@ -15,7 +15,7 @@ dnf -y install rear grub2-efi-x64-modules grub2-tools-extra
 
 # Backup
 
-## with NFT Server
+## with NFS Server
 
 ```sh
 cp /etc/rear/local.conf /etc/rear/local.conf.bak
