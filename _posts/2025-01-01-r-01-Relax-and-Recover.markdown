@@ -61,8 +61,6 @@ ERROR: URL 'file:///backup' has the backup directory '/backup' in the '/' filesy
 rear -v mkbackup; echo ${?}
 ```
 
-※検証では、rear実行側に、libvirtの仮想環境を使用した。NFSサーバーに繋がらない、マウントできない。サーバー側で`systemctl stop firewalld`するとマウントできるため、穴あけが足りない模様。
-
 # Restore
 
 1. レスキューシステムを取り出す(ISOファイル、DVD、USBとして書き出す) 。
@@ -109,7 +107,14 @@ exportfs -ra
 systemctl enable --now rpcbind nfs-server firewalld
 systemctl restart rpcbind nfs-server firewalld
 firewall-cmd --add-service=nfs --permanent
+
+# libvirtの時は、interface virbr0から通信が入ってくる。
+firewall-cmd --zone=libvirt --add-service=nfs --permanent
+
 firewall-cmd --reload
+
+firewall-cmd --list-all
+firewall-cmd --zone=libvirt --list-all
 ```
 
 
@@ -253,7 +258,7 @@ do
   virsh shutdown ${v}
   virsh destroy ${v}
   virsh undefine ${v}
-  virsh undefine ${v}--remove-all-storage
+  virsh undefine ${v} --remove-all-storage
 done
 virsh list --all
 ```
