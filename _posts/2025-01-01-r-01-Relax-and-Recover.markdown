@@ -61,7 +61,7 @@ ERROR: URL 'file:///backup' has the backup directory '/backup' in the '/' filesy
 rear -v mkbackup; echo ${?}
 ```
 
-※NFSサーバーに繋がらない、マウントできない。`systemctl stop firewalld`するとマウントできるため、穴あけが足りない模様。
+※検証では、rear実行側に、libvirtの仮想環境を使用した。NFSサーバーに繋がらない、マウントできない。サーバー側で`systemctl stop firewalld`するとマウントできるため、穴あけが足りない模様。
 
 # Restore
 
