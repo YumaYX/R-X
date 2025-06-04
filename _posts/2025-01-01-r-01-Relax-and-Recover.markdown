@@ -62,7 +62,7 @@ ERROR: URL 'file:///backup' has the backup directory '/backup' in the '/' filesy
 ## Start Backup
 
 ```sh
-rear -v mkbackup
+rear -v mkbackup; echo ${?}
 ```
 
 ※NFSサーバーに繋がらない、マウントできない。`systemctl stop firewalld`するとマウントできるため、穴あけが足りない模様。
@@ -121,9 +121,42 @@ firewall-cmd --reload
 
 ## target machine
 
+```sh
+cat << 'KICKSTART' > /tmp/ks.cfg
+text
+reboot
+cdrom
+
+keyboard --vckeymap=jp106 --xlayouts='jp','us'
+# keyboard --vckeymap=us --xlayouts='us','jp'
+lang en_US.UTF-8
+
+network --bootproto=dhcp --ipv6=auto --activate --hostname=localhost
+zerombr
+
+%packages
+@core
+%end
+
+ignoredisk --only-use=vda
+autopart
+clearpart --all --initlabel
+
+timezone Asia/Tokyo --utc
+
+rootpw --iscrypted --allow-ssh $6$EkGHWaJKwbybILqx$DwIwbw5NOGm2LpNlaCIRCeckcOlHACxMMfsyYijZ0uEKmGTHmDSqQhs4ndUGpme5uZl7zg/aJyam8j9N6wWRG.
+KICKSTART
+```
+
+ディストリビューションを/tmpにダウンロードしておく。
 
 ```sh
-osinfo-query os | grep -E "rhel[1|9]"
+isouri='https://repo.almalinux.org/almalinux/10/isos/x86_64/AlmaLinux-10.0-x86_64-minimal.iso'
+cd /tmp ; curl -O "${isouri}"
+```
+
+```sh
+#osinfo-query os | grep -E "rhel[1|9]"
 
 isouri=$(ls -1 /tmp/AlmaLinux-10* | head -n1)
 
@@ -139,11 +172,11 @@ virt-install \
   --accelerate \
   --initrd-inject /tmp/ks.cfg \
   --extra-args "console=tty0 console=ttyS0,115200n8 inst.ks=file:/ks.cfg"
-
-# => login and rear backup
-
-# ctrl + ]
 ```
+
+1. login
+1. backup with rear
+1. `ctrl` + `]`
 
 ```sh
 # @host machine and target machine
@@ -200,10 +233,12 @@ EOF
 virsh define guest1-rhxr.xml
 virsh start guest1-rhxr
 virsh console guest1-rhxr
+```
 
-# => Restore
-# ctrl + ]
+1. restore with rear
+1. `ctrl` + `]`
 
+```sh
 reset
 virsh detach-disk guest1-rhxr vdb --config
 virsh shutdown guest1-rhxr
@@ -217,8 +252,12 @@ virsh console guest1-rhxr
 reset
 # stop vm(clean)
 virsh list --all
-virsh shutdown guest1-rhxr
-virsh destroy guest1-rhxr
-virsh undefine guest1-rhxr
-virsh undefine guest1-rhxr --remove-all-storage
+for v in guest1-rhxr guest1-rhx
+do
+  virsh shutdown ${v}
+  virsh destroy ${v}
+  virsh undefine ${v}
+  virsh undefine ${v}--remove-all-storage
+done
+virsh list --all
 ```
