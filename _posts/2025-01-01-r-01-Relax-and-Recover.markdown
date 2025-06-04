@@ -147,19 +147,15 @@ virt-install \
 # ctrl + ]
 ```
 
-
-
-
-
-
-
-
-
 ```sh
-# @host machine
+# @host machine and target machine
 isofile='/tmp/rear.iso'
 cp -pv /nfs/localhost/rear-localhost.iso ${isofile}
 
+virsh list --all
+virsh shutdown guest1-rhxr
+virsh destroy guest1-rhxr
+virsh undefine guest1-rhxr
 
 qemu-img create -f qcow2 /var/lib/libvirt/images/guest1-rhxr.qcow2 30G
 cat <<'EOF' > guest1-rhxr.xml
@@ -169,6 +165,7 @@ cat <<'EOF' > guest1-rhxr.xml
   <vcpu>2</vcpu>
   <os>
     <type arch='x86_64' machine='q35'>hvm</type>
+　  <boot dev='cdrom'/>
     <boot dev='hd'/>
   </os>
   <features>
@@ -178,11 +175,20 @@ cat <<'EOF' > guest1-rhxr.xml
   <cpu mode='host-passthrough'/>
   <devices>
     <emulator>/usr/libexec/qemu-kvm</emulator>
+
+<disk type='file' device='cdrom'>
+  <driver name='qemu' type='raw'/>
+  <source file='/tmp/rear.iso'/>
+  <target dev='vdb' bus='sata'/>
+  <readonly/>
+</disk>
+
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
       <source file='/var/lib/libvirt/images/guest1-rhxr.qcow2'/>
       <target dev='vda' bus='virtio'/>
     </disk>
+
     <interface type='network'>
       <source network='default'/>
       <model type='virtio'/>
@@ -194,21 +200,27 @@ cat <<'EOF' > guest1-rhxr.xml
 EOF
 
 virsh define guest1-rhxr.xml
-
-
 virsh start guest1-rhxr
-sleep 10; virsh attach-disk guest1-rhxr ${isofile} hdc --type cdrom --mode readonly
-
-#virsh detach-disk guest1-rhxr hdc --type cdrom
-# （手動で、マウント、bootorder、を設定したため、コマンドに変更したい）
+virsh console guest1-rhxr
 
 # => Restore
+# ctrl + ]
 
+reset
+virsh detach-disk guest1-rhxr vdb --config
+virsh shutdown guest1-rhxr
+
+virsh start guest1-rhxr
+virsh console guest1-rhxr
+
+# check
+# ctrl + ]
+
+reset
 # stop vm(clean)
 virsh list --all
 virsh shutdown guest1-rhxr
 virsh destroy guest1-rhxr
 virsh undefine guest1-rhxr
-
-#virsh undefine guest1-rhxr --remove-all-storage
+virsh undefine guest1-rhxr --remove-all-storage
 ```
