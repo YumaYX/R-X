@@ -19,8 +19,8 @@ Sambaサーバーを構築する。ネットワークを通して、ファイル
 ## マウントユーザーと、共有先ディレクトリ
 
 ```sh
-user=user
-pass=user
+user=vagrant
+pass=vagrant
 share_dir=/samba/share
 ```
 

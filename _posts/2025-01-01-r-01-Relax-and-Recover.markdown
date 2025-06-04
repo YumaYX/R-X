@@ -14,7 +14,7 @@ category: "Backup/Restore"
 
 ```sh
 dnf -y update
-dnf -y install rear grub2-efi-x64-modules grub2-tools-extra
+dnf -y install rear nfs-utils grub2-efi-x64-modules grub2-tools-extra
 ```
 
 # Backup
@@ -22,21 +22,20 @@ dnf -y install rear grub2-efi-x64-modules grub2-tools-extra
 ## with NFS Server
 
 ```sh
-cp /etc/rear/local.conf /etc/rear/local.conf.bak
+cp -pv /etc/rear/local.conf /etc/rear/local.conf.bak
 
 cat <<'EOF' > /etc/rear/local.conf
 OUTPUT=ISO
 BACKUP=NETFS
-BACKUP_URL="nfs://192.168.122.249/nfs/"
+BACKUP_URL="nfs://192.168.11.42/nfs/"
 
-BACKUP_PROG_EXCLUDE=("${BACKUP_PROG_EXCLUDE[@]}" '/media' '/vat/tmp' '/var/crash' '/kdump')
+BACKUP_PROG_EXCLUDE=("${BACKUP_PROG_EXCLUDE[@]}" '/media' '/var/tmp' '/var/crash' '/kdump')
 LOGFILE="$LOG_DIR/rear-$HOSTNAME.log"
 GRUB_RESCUE=1
 EOF
-
-#mkdir -p /backup && umount /backup
-#mount -t nfs 192.168.122.249:/nfs /backup
 ```
+
+
 
 ## on Local
 
@@ -68,6 +67,8 @@ ERROR: URL 'file:///backup' has the backup directory '/backup' in the '/' filesy
 rear -v mkbackup
 ```
 
+※NFSサーバーに繋がらない、マウントできない。`systemctl stop firewalld`するとマウントできるため、穴あけが足りない模様。
+
 # Restore
 
 1. レスキューシステムを取り出す(ISOファイル、DVD、USBとして書き出す) 。
@@ -95,37 +96,19 @@ reboot
 
 # Build Env.
 
-```sh
-isouri=$(ls -1 /tmp/AlmaLinux-10* | head -n1)
-
-virt-install \
-  --name guest1-rhx \
-  --memory 2048 \
-  --vcpus 2 \
-  --network default \
-  --disk size=20 \
-  --location "${isouri}" \
-  --os-variant rhel9.4 \
-  --graphics none \
-  --accelerate \
-  --initrd-inject /tmp/ks.cfg \
-  --extra-args "console=tty0 console=ttyS0,115200n8 inst.ks=file:/ks.cfg"
-```
+## NFS Server
 
 ```sh
-# @ virtual machine
-#virsh console guest1-rhx
-
-ip a #=> 192.168.122.249
-
+# @host machine
 # Build NFS Server
 dnf -y update
 dnf -y install nfs-utils firewalld
 
+
 nfs_dir=/nfs
 mkdir -p ${nfs_dir}
-echo "${nfs_dir} 192.168.122.0/24(rw,no_root_squash)" > /etc/exports
-# echo "${nfs_dir} *(rw,no_root_squash)" > /etc/exports
+#echo "${nfs_dir} 192.168.122.0/24(rw,async,no_root_squash)" > /etc/exports
+echo "${nfs_dir} *(rw,async,no_root_squash)" > /etc/exports
 
 exportfs -ra
 
@@ -135,27 +118,97 @@ firewall-cmd --add-service=nfs --permanent
 firewall-cmd --reload
 ```
 
+
+
+
+## target machine
+
+
 ```sh
-cp -pv /nfs/localhost/rear-localhost.iso /tmp/rear.iso
-umount /nfs
-isofile='/tmp/rear.iso'
+osinfo-query os | grep -E "rhel[1|9]"
+
+isouri=$(ls -1 /tmp/AlmaLinux-10* | head -n1)
 
 virt-install \
-  --name guest1-rhxbk \
+  --name guest1-rhx \
   --memory 2048 \
   --vcpus 2 \
   --network default \
   --disk size=20 \
-  --location "${isofile}" \
-  --os-variant rhel9.4 \
+  --location "${isouri}" \
+  --os-variant rhel10.0 \
   --graphics none \
-  --extra-args "console=tty0 console=ttyS0,115200n8"
+  --accelerate \
+  --initrd-inject /tmp/ks.cfg \
+  --extra-args "console=tty0 console=ttyS0,115200n8 inst.ks=file:/ks.cfg"
 
-# Resore
+# => login and rear backup
+
+# ctrl + ]
+```
+
+
+
+
+
+
+
+
+
+```sh
+# @host machine
+isofile='/tmp/rear.iso'
+cp -pv /nfs/localhost/rear-localhost.iso ${isofile}
+
+
+qemu-img create -f qcow2 /var/lib/libvirt/images/guest1-rhxr.qcow2 30G
+cat <<'EOF' > guest1-rhxr.xml
+<domain type='kvm'>
+  <name>guest1-rhxr</name>
+  <memory unit='MiB'>4096</memory>
+  <vcpu>2</vcpu>
+  <os>
+    <type arch='x86_64' machine='q35'>hvm</type>
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+  </features>
+  <cpu mode='host-passthrough'/>
+  <devices>
+    <emulator>/usr/libexec/qemu-kvm</emulator>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='/var/lib/libvirt/images/guest1-rhxr.qcow2'/>
+      <target dev='vda' bus='virtio'/>
+    </disk>
+    <interface type='network'>
+      <source network='default'/>
+      <model type='virtio'/>
+    </interface>
+    <graphics type='vnc' port='-1' listen='127.0.0.1'/>
+    <console type='pty'/>
+  </devices>
+</domain>
+EOF
+
+virsh define guest1-rhxr.xml
+
+
+virsh start guest1-rhxr
+sleep 10; virsh attach-disk guest1-rhxr ${isofile} hdc --type cdrom --mode readonly
+
+#virsh detach-disk guest1-rhxr hdc --type cdrom
+# （手動で、マウント、bootorder、を設定したため、コマンドに変更したい）
+
+# => Restore
 
 # stop vm(clean)
 virsh list --all
-virsh shutdown guest1-rhx
-virsh destroy guest1-rhx
-virsh undefine guest1-rhx --remove-all-storage 
+virsh shutdown guest1-rhxr
+virsh destroy guest1-rhxr
+virsh undefine guest1-rhxr
+
+#virsh undefine guest1-rhxr --remove-all-storage
 ```
