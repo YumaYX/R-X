@@ -123,12 +123,6 @@ sudo mount -t cifs -o username=vagrant,password=vagrant,uid=1000,gid=1000 '//192
 
 rootでマウントすると、一般ユーザで書き込めないため、uid,gidをオプションに付加する。ゲストユーザも状況は同じである。
 
-#### Connection Test
-
-```sh
-sudo mount -t cifs -o username=vagrant,password=vagrant,uid=1000,gid=1000 '//192.168.11.123/vagrant' /media
-```
-
 ### Shareディレクトリのラベルについて
 
 semanageまたは、restoreconを再度打鍵すると、ファイルのSELinuxセキュリティコンテキストラベルが変更される場合がある。以下にファイルサーバとして使用できる状態を示す。タイプが、samba_share_tになっていることが、Sambaへの共有を示す。
