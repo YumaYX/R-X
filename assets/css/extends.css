@@ -119,7 +119,7 @@ footer {
 }
 
 span.marker {
-    background-color: #eaedf7;
+    background: linear-gradient(transparent 15%, #eaedf7 50%);
 }
 
 .spacer {
