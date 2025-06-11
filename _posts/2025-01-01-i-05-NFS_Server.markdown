@@ -4,6 +4,14 @@ title: NFS Server
 category: "Service"
 ---
 
+# NFSサーバーの構築手順
+
+NFS（Network File System）サーバーの構築手順を紹介します。NFSは、ネットワーク上の他のマシンにディレクトリを共有するためのプロトコルです。
+
+## インストールと設定
+
+以下のコマンドは、NFSサーバーをセットアップするための手順です。
+
 ```sh
 dnf -y update
 dnf -y install nfs-utils firewalld
@@ -21,8 +29,20 @@ firewall-cmd --add-service=nfs --permanent
 firewall-cmd --reload
 ```
 
-# mount
+1. システムを更新し、NFS関連のパッケージ（`nfs-utils`）とファイアウォール管理ツール（`firewalld`）をインストールします。
+2. `/nfs` ディレクトリを作成し、クライアントからアクセス可能なように `/etc/exports` に設定を記述します。
+3. `exportfs -ra` によりエクスポート設定を反映させます。
+4. 必要なサービスを有効化・起動し、ファイアウォールでNFS通信を許可します。
+
+## クライアントからのマウント
+
+クライアント側では、以下のコマンドでNFS共有ディレクトリをマウントできます。
 
 ```sh
 mount -t nfs <NFSサーバーIPアドレス>:/nfs /media
 ```
+
+- `<NFSサーバーIPアドレス>` は、実際のNFSサーバーのIPアドレスに置き換えてください。
+- `/media` はマウントポイントで、任意のディレクトリに変更可能です。
+
+この手順により、簡単なNFSサーバーを構築し、LAN内の他のマシンとディレクトリ共有ができるようになります。
