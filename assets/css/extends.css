@@ -150,7 +150,7 @@ nav a {
 }
 
 .stitle {
-    font-size: 33px;
+    font-size: 4rem;
     vertical-align: middle;
     display: inline-block;
     margin: 0px;
@@ -174,11 +174,4 @@ blockquote p {
     color: #4D5269;
     padding: 1rem;
     font-style: italic;
-}
-
-.material-icons {
-    vertical-align: middle;
-    display: inline-block;
-    line-height: normal;
-    padding-bottom: 0.5rem;
 }
