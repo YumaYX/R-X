@@ -156,15 +156,6 @@ nav a {
     margin: 0px;
 }
 
-.tag {
-    display: inline-block;
-    padding: 2px 4px;
-    border-radius: 9999px;
-    font-size: 8px;
-    border: 0.1px solid #000;
-    margin-bottom: 5px;
-}
-
 blockquote {
     background-color: white;
     border-left: 0.4rem solid #000;
