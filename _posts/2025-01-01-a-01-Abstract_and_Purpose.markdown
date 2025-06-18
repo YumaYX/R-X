@@ -22,6 +22,12 @@ The entire website can be downloaded for offline access using the above wget com
 wget -pkr -l1 -w3 --random-wait https://yumayx.github.io/R-X/
 ```
 
+## Testing Report of AlmaLinux 9
+
+The following link leads to the page documenting the verification performed on AlmaLinux 9. It provides detailed information regarding the scope, methodologies, and results of the tests conducted.
+
+- <https://yumayx.github.io/Workshop/>
+
 # Reference
 
 AlmaLinux Official Website. Available at <https://almalinux.org/>
