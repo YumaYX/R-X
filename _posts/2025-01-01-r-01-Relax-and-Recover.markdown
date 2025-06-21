@@ -29,8 +29,6 @@ GRUB_RESCUE=1
 EOF
 ```
 
-
-
 ## on Local
 
 ```sh
@@ -46,7 +44,7 @@ GRUB_RESCUE=1
 EOF
 ```
 
-### 注意
+### Attention
 
 `/backup` must be on a different device than `/`:
 
@@ -62,32 +60,32 @@ rear -v mkbackup; echo ${?}
 
 # Restore
 
-1. レスキューシステムを取り出す(ISOファイル、DVD、USBとして書き出す) 。
-1. レスキューシステムより、ブートする。
-1. “Recover hostname“を選択する。
-1. ログインプロンプトが出たら、rootと入力する。
+1. Prepare the rescue system (export it as an ISO file, DVD, or USB).
+2. Boot from the rescue system.
+3. Select “Recover hostname”.
+4. When the login prompt appears, enter `root`.
 
 ```sh
 ip a
 
-# DHCPがあるネットワークであれば不要(IPアドレスが取得できていれば不要)
+# Not Required if There Is a DHCP Network (Not Required If an IP Address Can Be Obtained)
 ip addr add 192.168.122.250/24 dev <network interface>
 ```
 
-リストアを進める。途中に出てくる対話には、基本的に1を答える。
+Proceed with the restore. For the interactive prompts that appear during the process, basically respond with `1`.
 
 ```sh
 rear recover
 reboot
 ```
 
-再起動が2回実施されるため、待つ。
+Since the system will reboot twice, please wait.
 
 ---
 
-# テスト用環境の構築
+# Setting Up a Test Environment
 
-以下は、本稿の検証環境構築の手順である。
+Below are the steps for setting up the test environment used in this document.
 
 ## NFS Server
 
@@ -109,7 +107,7 @@ systemctl enable --now rpcbind nfs-server firewalld
 systemctl restart rpcbind nfs-server firewalld
 firewall-cmd --add-service=nfs --permanent
 
-# libvirtの時は、interface virbr0から通信が入ってくる。
+# When Using libvirt, Communication Comes Through the virbr0 Interface.
 firewall-cmd --zone=libvirt --add-service=nfs --permanent
 
 firewall-cmd --reload
@@ -150,7 +148,7 @@ rootpw --iscrypted --allow-ssh $6$EkGHWaJKwbybILqx$DwIwbw5NOGm2LpNlaCIRCeckcOlHA
 KICKSTART
 ```
 
-ディストリビューションを/tmpにダウンロードしておく。
+Download the distribution to `/tmp` in advance.
 
 ```sh
 isouri='https://repo.almalinux.org/almalinux/10/isos/x86_64/AlmaLinux-10.0-x86_64-minimal.iso'

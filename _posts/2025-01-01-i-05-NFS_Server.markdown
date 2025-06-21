@@ -4,13 +4,13 @@ title: NFS Server
 category: "Service"
 ---
 
-# NFSサーバーの構築手順
+# How to Set Up an NFS Server
 
-NFS（Network File System）サーバーの構築手順を紹介します。NFSは、ネットワーク上の他のマシンにディレクトリを共有するためのプロトコルです。
+This guide explains how to set up an NFS (Network File System) server. NFS is a protocol used to share directories with other machines over a network.
 
-## インストールと設定
+## Installation and Configuration
 
-以下のコマンドは、NFSサーバーをセットアップするための手順です。
+The following commands are used to set up the NFS server.
 
 ```sh
 dnf -y update
@@ -29,20 +29,20 @@ firewall-cmd --add-service=nfs --permanent
 firewall-cmd --reload
 ```
 
-1. システムを更新し、NFS関連のパッケージ（`nfs-utils`）とファイアウォール管理ツール（`firewalld`）をインストールします。
-2. `/nfs` ディレクトリを作成し、クライアントからアクセス可能なように `/etc/exports` に設定を記述します。
-3. `exportfs -ra` によりエクスポート設定を反映させます。
-4. 必要なサービスを有効化・起動し、ファイアウォールでNFS通信を許可します。
+1. Update the system and install the necessary packages for NFS (`nfs-utils`) and the firewall management tool (`firewalld`).
+2. Create the `/nfs` directory and add configuration to `/etc/exports` to make it accessible from clients.
+3. Apply the export settings using the `exportfs -ra` command.
+4. Enable and start the required services, and configure the firewall to allow NFS traffic.
 
-## クライアントからのマウント
+## Mounting from the Client
 
-クライアント側では、以下のコマンドでNFS共有ディレクトリをマウントできます。
+On the client side, you can mount the NFS shared directory using the following command.
 
 ```sh
-mount -t nfs <NFSサーバーIPアドレス>:/nfs /media
+mount -t nfs <NFS server IP address>:/nfs /media
 ```
 
-- `<NFSサーバーIPアドレス>` は、実際のNFSサーバーのIPアドレスに置き換えてください。
-- `/media` はマウントポイントで、任意のディレクトリに変更可能です。
+- Replace `<NFS server IP address>` with the actual IP address of your NFS server.
+- `/media` is the mount point and can be changed to any directory you prefer.
 
-この手順により、簡単なNFSサーバーを構築し、LAN内の他のマシンとディレクトリ共有ができるようになります。
+By following these steps, you can set up a basic NFS server and share directories with other machines on your local network.

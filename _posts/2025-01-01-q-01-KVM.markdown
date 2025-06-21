@@ -4,27 +4,27 @@ title: KVM
 category: "Virtualization"
 ---
 
-KVM 仮想化環境を構築し、Kickstart を使った自動インストールで仮想マシンを作成する手順の概要です。加えて、インターネット経由やローカルISOファイルからの仮想マシン作成方法も示しています。
+This is an overview of setting up a KVM virtualization environment and creating virtual machines using automated installation with Kickstart. Additionally, it covers creating virtual machines via the internet or from local ISO files.
 
-まず、KVMの動作に必要なパッケージ（qemu-kvm、libvirt、virt-install）をインストールし、libvirtdサービスを有効化かつ起動します。
+First, install the necessary packages for KVM operation (`qemu-kvm`, `libvirt`, `virt-install`) and enable and start the `libvirtd` service.
 
 ```sh
 dnf -y install qemu-kvm libvirt virt-install
 systemctl enable --now libvirtd
 ```
 
-仮想マシンの停止や削除は以下のコマンドで行います。
+You can stop or delete virtual machines using the following commands.
 
 ```sh
-virsh shutdown guest1-rhx       # ゲストの正常シャットダウン
-virsh destroy guest1-rhx        # 強制停止
-virsh undefine guest1-rhx --remove-all-storage  # 設定とディスクを完全削除
+virsh shutdown guest1-rhx
+virsh destroy guest1-rhx
+virsh undefine guest1-rhx --remove-all-storage
 ```
 
-# kickstart
+# Kickstart
 
-/tmp/ks.cfg に保存したKickstartファイルでは、キーボード設定や言語、ネットワーク、パーティション構成、タイムゾーン、rootパスワードなどをあらかじめ指定します。
-仮想ディスクは KVM環境の特性に合わせて vda として指定しています。
+The Kickstart file saved at `/tmp/ks.cfg` predefines settings such as keyboard layout, language, network, partitioning, timezone, and root password.  
+The virtual disk is specified as `vda` to match the characteristics of the KVM environment.
 
 ```sh
 cat << 'KICKSTART' > /tmp/ks.cfg
@@ -53,9 +53,9 @@ rootpw --iscrypted --allow-ssh $6$EkGHWaJKwbybILqx$DwIwbw5NOGm2LpNlaCIRCeckcOlHA
 KICKSTART
 ```
 
-## from the internet
+## From the Internet
 
-URLで指定したリポジトリからAlmaLinuxのインストールイメージを取得し、Kickstartで自動インストールします。
+The AlmaLinux installation image is retrieved from a repository specified by a URL, and the installation is automated using Kickstart.
 
 ```sh
 virt-install \
@@ -72,9 +72,9 @@ virt-install \
   --extra-args "console=tty0 console=ttyS0,115200n8 inst.ks=file:/ks.cfg"
 ```
 
-## from a local file
+## From a Local File
 
-あらかじめISOをダウンロードしておき、ローカルファイルを指定して仮想マシンを作成する方法です。
+This method creates a virtual machine by specifying a local ISO file that has been downloaded in advance.
 
 ```sh
 isouri='https://repo.almalinux.org/almalinux/10/isos/x86_64/AlmaLinux-10.0-x86_64-minimal.iso'
@@ -97,4 +97,4 @@ virt-install \
 
 # Vagrant
 
-2025年5月31日時点では、AlmaLinux 10用の公式Vagrantリポジトリが存在しないため、Vagrantを使った簡単な環境構築は現状できません。
+As of May 31, 2025, there is no official Vagrant repository for AlmaLinux 10, so it is currently not possible to easily set up an environment using Vagrant.

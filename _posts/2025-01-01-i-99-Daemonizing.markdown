@@ -4,9 +4,9 @@ title: Daemonizing
 category: "Service"
 ---
 
-簡単なシェルスクリプトをバックグラウンドで常時実行させるには、systemd サービスとして登録するのが便利です。ここでは、1 秒ごとに "hello world" をログファイルに書き込むスクリプトを /opt/hello.sh に作成し、systemd を通じて起動・管理する例を示しています。
+To run a simple shell script continuously in the background, it is convenient to register it as a systemd service. Here, as an example, we create a script at `/opt/hello.sh` that writes "hello world" to a log file every second, and manage it via systemd.
 
-また、SELinux が有効な状態では、スクリプトを /tmp 以下に配置すると適切なコンテキストが付かず、systemd 経由で実行できない場合があります。スクリプトを /opt に配置することで usr_t ラベルが適用され、問題なく動作します。
+Also, when SELinux is enabled, placing the script under `/tmp` may cause it to lack the proper context and prevent execution via systemd. By placing the script under `/opt`, the `usr_t` label is applied, allowing it to run without issues.
 
 ```sh
 cat <<'EOFSH' > /opt/hello.sh
@@ -43,7 +43,7 @@ sleep 3 ; tail -F /tmp/hello.log
 
 # Note on SELinux Contexts
 
-スクリプトが /tmp にあると SELinux によって実行が拒否されることがあります。以下のように /opt に配置した場合は、usr_t のラベルが付き、正常に systemd サービスから呼び出すことができます。
+If the script is located in `/tmp`, SELinux may prevent its execution. When placed in `/opt` as shown below, the `usr_t` label is applied, allowing it to be properly called from a systemd service.
 
 ```
 [root@localhost ~]# ls -Z /opt/hello.sh
@@ -51,7 +51,7 @@ unconfined_u:object_r:usr_t:s0 /opt/hello.sh
 [root@localhost ~]#
 ```
 
-`ExecStart=/usr/bin/sh -c <Shell>`の形で記述すれば、SELinuxコンテキストの考慮は不要となる。
+By writing `ExecStart=/usr/bin/sh -c <Shell>`, you don’t need to worry about the SELinux context.
 
 ##### Reference
 

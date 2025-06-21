@@ -4,14 +4,14 @@ title: Virtual KVM Console
 category: "Virtualization"
 ---
 
-KVMの仮想マシンを管理するために、Webコンソールを使用する。事前にKVM環境を作成しておく。
+Use a web console to manage KVM virtual machines. Make sure the KVM environment is set up beforehand.
 
 ```sh
 dnf -y install cockpit-machines
 systemctl enable --now cockpit.socket
 ```
 
-# Local環境で使用する場合のみ
+# For Use in Local Environments Only
 
 ```sh
 dnf -y install firewalld
@@ -20,10 +20,10 @@ firewall-cmd --reload
 firewall-cmd --list-all
 ```
 
-1. ブラウザにて、`http://hostname:9090/`にアクセスする。
-1. 一般ユーザーでログインする。
-1. `システム`→`仮想マシン`を選択する。
+1. Open your browser and go to `http://hostname:9090/`.
+2. Log in as a regular user.
+3. Select `System` → `Virtual Machines`.
 
-管理者権限を使用する場合は、`制限付きアクセス`をクリックする。
+To use administrator privileges, click `Restricted Access`.
 
-これを公開するなんて、とっても危ないね。
+Publishing this publicly is very risky.

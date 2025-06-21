@@ -4,19 +4,19 @@ title: Samba Server
 category: "Service"
 ---
 
-Sambaサーバーを構築する。ネットワークを通して、ファイル共有をする。
-
-# 想定環境
-
-- Samba Server：192.168.11.123
-    - ネットワーク：192.168.11.0/24
-    - 共有ディレクトリ：/samba/share
-    - ユーザ：vagrant
-        - システムユーザおよび、ホームディレクトリが存在することを前提とする。
-
 # Build a Samba Server
 
-## マウントユーザーと、共有先ディレクトリ
+This guide explains how to build a Samba server to share files over the network.
+
+## Assumed Environment
+
+- Samba Server: 192.168.11.123  
+    - Network: 192.168.11.0/24  
+    - Shared Directory: /samba/share  
+    - User: vagrant  
+        - Assumes the system user and home directory already exist.
+
+## Mount User and Shared Directory
 
 ```sh
 user=vagrant
@@ -80,18 +80,17 @@ systemctl enable  smb.service nmb.service
 systemctl restart smb.service nmb.service
 ```
 
-### delete user
+## Deleting a User
 
-ユーザーを削除する場合
+To delete a specific user from the local `smbpasswd` file:
 
 ```sh
-# 指定したユーザー userをローカルのsmbpasswdファイルから削除することを指示
 smbpasswd -x ${user}
 ```
 
 ## Connection Test
 
-クライアントのインストールを実施し、その後、共有フォルダへアクセスする。
+Install the necessary client packages on the client machine, then access the shared folder.
 
 ### Test by hand
 
@@ -102,30 +101,31 @@ smbclient //192.168.11.123/share
 
 ### Test 2
 
-Linux上でマウントする際は、一般ユーザに権限を与える形(uid,gidを指定)する形をおすすめする。
+When mounting on Linux, it is recommended to assign permissions to a regular user by specifying `uid` and `gid`.
+
 
 ```sh
 dnf -y install cifs-utils
-# uid,gidはユーザに合わせる
+# Match uid and gid to the user
 sudo mount -t cifs -o username=vagrant,password=vagrant,uid=1000,gid=1000 '//192.168.11.123/Share' /media ; echo $?
 ```
 
-#### マウントコマンド詳細
+#### Mount Command Details
 
 ```sh
-# mount -t cifs [-o <options>] //<接続先>/<共有フォルダ名> <マウント先>
+# mount -t cifs [-o <options>] //<server>/<shared folder> <mount point>
 ```
 
-- 接続先：IPアドレス、サーバ名
-- 共有フォルダ名：samba.confの中で、**<u>見出しの共有フォルダ名</u>**
-- マウント先：任意のディレクトリ
-- -o：オプション
+- Server: IP address or server name  
+- Shared folder name: The **shared folder name** as defined in the samba.conf section header  
+- Mount point: Any directory of your choice  
+- `-o`: Options
 
-rootでマウントすると、一般ユーザで書き込めないため、uid,gidをオプションに付加する。ゲストユーザも状況は同じである。
+If you mount as root, regular users will not be able to write, so add `uid` and `gid` options. The same applies for guest users.
 
-### Shareディレクトリのラベルについて
+### About the Label of the Share Directory
 
-semanageまたは、restoreconを再度打鍵すると、ファイルのSELinuxセキュリティコンテキストラベルが変更される場合がある。以下にファイルサーバとして使用できる状態を示す。タイプが、samba_share_tになっていることが、Sambaへの共有を示す。
+When running `semanage` or `restorecon` again, the SELinux security context label of the files may change. Below is the state required for the directory to be used as a file server. The type being `samba_share_t` indicates it is shared via Samba.
 
 ```
 [root@localhost ~]# ls -1RZ /samba
@@ -137,11 +137,11 @@ system_u:object_r:samba_share_t:s0 share
 [root@localhost ~]# 
 ```
 
-# Macからの接続
+# Connecting from Mac
 
-- Finder -> 移動 -> サーバへ移動...(⌘+k)
+- Finder -> Go -> Connect to Server... (⌘+K)
 
-## 接続URI
+## URI to connect
 
 ```sh
 smb://vagrant:vagrant@192.168.11.123
@@ -155,9 +155,9 @@ cifs://vagrant:vagrant@192.168.11.123
 cifs://vagrant:vagrant@192.168.11.123/Share
 ```
 
-# Windows 11からの接続
+# Connecting from Windows 11
 
-コマンドプロンプトにて
+Using Command Prompt
 
 ```bat
 net use r: \\192.168.11.123\Share vagrant /user:vagrant
