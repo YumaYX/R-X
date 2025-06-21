@@ -4,11 +4,11 @@ title: Web Server
 category: "Service"
 ---
 
-Nginx をインストールし、基本的な Web サーバーとして利用するための手順と説明です。ファイアウォールの設定や設定ファイルのバックアップも含めています。
+This guide explains how to install Nginx and set it up as a basic web server. It also includes steps for configuring the firewall and backing up configuration files.
 
-Nginx をインストールし、インストール後すぐにサービスを起動して自動起動も有効にします。正常に動作すれば、ポート 80 で Web サーバーが待ち受けを開始します。
+After installing Nginx, the service is started immediately and enabled to start automatically at boot. If everything is working correctly, the web server will begin listening on port 80.
 
-Nginx の設定ファイルを編集する前に、バックアップを作成します。これにより、設定ミスがあっても元の状態に戻すことができます。
+Before editing the Nginx configuration file, be sure to create a backup. This allows you to restore the original settings in case of any configuration errors.
 
 ```sh
 dnf -y install nginx
@@ -26,7 +26,9 @@ cp -pv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
 
 `/usr/share/nginx/html`
 
-このディレクトリに HTML ファイルを配置することで、Web サーバーとしてコンテンツを配信できます。たとえば index.html をこのディレクトリに置けば、ブラウザからアクセスしたときにそのページが表示されます。
+By placing HTML files in this directory, you can serve content through the web server.
+For example, if you place an index.html file here, it will be displayed when accessed via a web browser.
+
 
 # Environment
 
