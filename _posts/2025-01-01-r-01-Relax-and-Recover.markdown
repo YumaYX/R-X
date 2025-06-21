@@ -48,12 +48,11 @@ EOF
 
 ### 注意
 
-`/backup`は、`/`と別デバイスにすること：
+`/backup` must be on a different device than `/`:
 
 ```
 ERROR: URL 'file:///backup' has the backup directory '/backup' in the '/' filesystem which is forbidden.
 ```
-のエラーが発生する。
 
 ## Start Backup
 
