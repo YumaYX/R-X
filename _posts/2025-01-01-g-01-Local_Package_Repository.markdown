@@ -4,14 +4,13 @@ title: Local Package Repository
 category: "Packages"
 ---
 
-インストールメディアをマウントして、パッケージレポジトリを使用できるようにする。
+Mount the installation media and configure it so the package repository can be used.
 
-# AlmaLinuxのパッケージレポジトリ設定
+## Configuring the Package Repository for AlmaLinux
 
-1. 既存のパッケージレポジトリ参照先ファイルを退避させる
-1. インストールメディアのマウント先を、参照先とする
-1. /mediaにマウントする。
-
+1. Back up the existing package repository reference files.
+1.Set the installation media mount point as the new repository reference.
+1.Mount the media to the /media directory.
 
 ```sh
 cd /tmp
@@ -50,7 +49,7 @@ wait
 sh /root/dvd_mount.sh
 ```
 
-# レポジトリ参照先を元に戻す場合
+## Restoring the Original Repository References
 
 ```sh
 rm -f /etc/yum.repos.d/dvd.repo
