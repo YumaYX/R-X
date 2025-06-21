@@ -22,7 +22,7 @@ firewall-cmd --reload
 cp -pv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
 ```
 
-# DocumentRoot
+## DocumentRoot
 
 `/usr/share/nginx/html`
 
@@ -30,7 +30,7 @@ By placing HTML files in this directory, you can serve content through the web s
 For example, if you place an index.html file here, it will be displayed when accessed via a web browser.
 
 
-# Environment
+## Environment
 
 ```
 [root@localhost ~]# cat /etc/redhat-release
