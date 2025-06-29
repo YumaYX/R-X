@@ -1,53 +1,71 @@
 ---
+
 layout: post
 title: Firewall
-category: "Networking"
+category: Networking
 ---
 
 Configure Firewall with firewalld
+----------------------------------
 
-## Installation
+### Installation
 
+The first step is to install the `firewalld` package on your system. You can do this using the following command:
 ```sh
 dnf -y install firewalld
+```
+Once the installation is complete, you need to enable and start the `firewalld` service:
+```sh
 systemctl enable --now firewalld
 ```
+### View Current Firewall Settings
 
-## View Current Firewall Settings
-
+You can view your current firewall settings using the following command:
 ```sh
 firewall-cmd --list-all
 ```
+This command will display all the active zones, services, and ports that are allowed in your firewall.
 
-## Open Service: HTTP
+### Open Service: HTTP
 
+To open a service such as HTTP, you can use the `--add-service` option followed by the name of the service. For example, to open the HTTP service, you can run the following 
+command:
 ```sh
 firewall-cmd --permanent --zone=public --add-service=http
 ```
+This will add the `http` service to the `public` zone and make it permanent.
 
-## Open Port: 80 (TCP)
+### Open Port: 80 (TCP)
 
+To open a specific port, you can use the `--add-port` option followed by the port number and protocol (`tcp` or `udp`). For example, to open port 80 for TCP traffic, you can 
+run the following command:
 ```sh
 firewall-cmd --permanent --zone=public --add-port=80/tcp
 ```
+This will add port 80 to the `public` zone and make it permanent.
 
-## Close Service: HTTP
+### Close Service: HTTP
 
+To close a service such as HTTP, you can use the `--remove-service` option followed by the name of the service. For example, to close the HTTP service, you can run the 
+following command:
 ```sh
 firewall-cmd --permanent --zone=public --remove-service=http
 ```
+This will remove the `http` service from the `public` zone and make it permanent.
 
-## Close Port: 80 (TCP)
+### Close Port: 80 (TCP)
 
+To close a specific port, you can use the `--remove-port` option followed by the port number and protocol (`tcp` or `udp`). For example, to close port 80 for TCP traffic, you 
+can run the following command:
 ```sh
 firewall-cmd --permanent --zone=public --remove-port=80/tcp
 ```
+This will remove port 80 from the `public` zone and make it permanent.
 
-## Reload
+### Reload
 
-You must reload the firewall after making changes.
-
+Once you have made changes to your firewall settings, you need to reload the firewall to apply the changes. You can do this by running the following command:
 ```sh
 firewall-cmd --reload
-firewall-cmd --list-all
 ```
+This will reload the firewall configuration and update the firewall rules accordingly.
